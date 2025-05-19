@@ -13,7 +13,7 @@ import {
 import { Producto } from "@prisma/client";
 
 async function FormularioProducto({
-  producto: producto,
+  producto,
 }: {
   producto?: Producto;
 }) {
@@ -38,13 +38,13 @@ async function FormularioProducto({
           />
           <Textarea
             name="descripcion"
-            label="Descripcion"
+            label="Descripción"
             variant="bordered"
             defaultValue={producto?.descripcion || ""}
           />
           <Input
             name="imagen"
-            type="string"
+            type="text"
             variant="bordered"
             label="Imagen producto"
             defaultValue={producto?.imagen?.toString()}
@@ -54,14 +54,14 @@ async function FormularioProducto({
             type="number"
             variant="bordered"
             label="Precio producto"
-            defaultValue={producto?.precio.toString()}
+            defaultValue={producto?.precio?.toString()}
           />
           <Input
             name="stock"
-            type="text"
+            type="number"
             variant="bordered"
             label="Stock producto"
-            defaultValue={producto?.stock.toString()}
+            defaultValue={producto?.stock?.toString()}
           />
           <Input
             name="fechaCaducidad"
@@ -77,7 +77,7 @@ async function FormularioProducto({
               producto?.idCategoria ? [producto.idCategoria.toString()] : []
             }
             items={categorias}
-            label="Categoria"
+            label="Categoría"
             name="idCategoria"
           />
         </CardBody>

@@ -3,111 +3,77 @@
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { convertirFechaAIsoDateTime } from "@/utils/fechas";
+import { ProductoFactory } from "@/lib/factory/ProductoFactory";
 
+// Crear Producto
 export async function crearProducto(formData: FormData) {
-  console.log(FormData);
+  try {
+    const productoData = await ProductoFactory.crearDesdeFormData(formData);
 
-  const nombre = formData.get("nombre")?.toString();
-  const descripcion = formData.get("descripcion")?.toString();
-  const precio = formData.get("precio")?.toString();
-  const imagen = formData.get("imagen")?.toString();
-  const stock = formData.get("stock")?.toString();
-  const fechaCaducidad = formData.get("fechaCaducidad")?.toString();
-  const idCategoria = formData.get("idCategoria")?.toString();
+    await prisma.producto.create({
+      data: productoData,
+    });
 
-  if (
-    !nombre ||
-    !descripcion ||
-    !precio ||
-    !stock ||
-    !fechaCaducidad ||
-    !idCategoria
-  ) {
-    return;
+    // Redirige correctamente a /productos
+    redirect("/productos");
+  } catch (error) {
+    console.error("Error al crear producto:", error);
+    // En caso de error, igual puedes redirigir si lo deseas:
+    redirect("/productos");
   }
-
-  const nuevoProducto = await prisma.producto.create({
-    data: {
-      nombre,
-      descripcion,
-      precio: parseFloat(precio),
-      imagen,
-      stock: parseInt(stock),
-      fechaCaducidad: convertirFechaAIsoDateTime(fechaCaducidad),
-      idCategoria: parseInt(idCategoria),
-    },
-  });
-  redirect("/productos");
 }
 
-export async function borrarProducto(formData: FormData) {
-  "use server";
-  const id = formData.get("id")?.toString();
-
-  if (!id) {
-    return;
-  }
-
-  await prisma.producto.delete({
-    where: {
-      id: parseInt(id),
-    },
-  });
-  revalidatePath("/productos");
-}
-
+// Actualizar Producto
 export async function actualizarProducto(formData: FormData) {
-  const id = formData.get("id")?.toString();
-  const nombre = formData.get("nombre")?.toString();
-  const descripcion = formData.get("descripcion")?.toString();
-  const precio = formData.get("precio")?.toString();
-  const imagen = formData.get("imagen")?.toString();
-  const stock = formData.get("stock")?.toString();
-  const fechaCaducidad = formData.get("fechaCaducidad")?.toString();
-  const idCategoria = formData.get("idCategoria")?.toString();
+  try {
+    const id = formData.get("id")?.toString();
+    if (!id) throw new Error("Falta el ID del producto");
 
-  if (
-    !id ||
-    !nombre ||
-    !descripcion ||
-    !precio ||
-    !stock ||
-    !fechaCaducidad ||
-    !idCategoria
-  ) {
-    return;
+    const productoData = await ProductoFactory.crearDesdeFormData(formData);
+
+    await prisma.producto.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: productoData,
+    });
+
+    // Redirige correctamente a /productos
+    redirect("/productos");
+  } catch (error) {
+    console.error("Error al actualizar producto:", error);
+    // También puedes redirigir aquí si ocurre un error
+    redirect("/productos");
   }
-
-  await prisma.producto.update({
-    where: {
-      id: parseInt(id),
-    },
-    data: {
-      nombre,
-      descripcion,
-      precio: parseFloat(precio),
-      imagen,
-      stock: parseInt(stock),
-      fechaCaducidad: convertirFechaAIsoDateTime(fechaCaducidad),
-      idCategoria: parseInt(idCategoria),
-    },
-  });
-  redirect("/productos");
 }
 
-export async function buscarProducto(formData: FormData) {
-  "use server";
-  const idCategoria = formData.get("idCategoria")?.toString();
+// Borrar Producto
+export async function borrarProducto(formData: FormData) {
+  try {
+    const id = formData.get("id")?.toString();
+    if (!id) throw new Error("Falta el ID del producto");
 
-  if (!idCategoria) {
-    return;
+    await prisma.producto.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    revalidatePath("/productos");
+  } catch (error) {
+    console.error("Error al borrar producto:", error);
   }
+}
 
-  await prisma.producto.findMany({
-    where: {
-      idCategoria: parseInt(idCategoria),
-    },
-  });
-  revalidatePath("/ventas");
+// Buscar Producto por Categoría (esto solo hace revalidación)
+export async function buscarProducto(formData: FormData) {
+  try {
+    const idCategoria = formData.get("idCategoria")?.toString();
+    if (!idCategoria) throw new Error("Falta el ID de la categoría");
+
+    // Esto no devuelve datos, solo revalida
+    revalidatePath("/ventas");
+  } catch (error) {
+    console.error("Error al buscar producto:", error);
+  }
 }

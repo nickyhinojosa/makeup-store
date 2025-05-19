@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  email         String?
+  telefono      String?
+  nit           String?
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  ventas Venta[] @relation("ClienteVentas")
+}
+
+model Empleado {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  apellido      String
+  ci            String
+  direccion     String?
+  telefono      String?
+  rol           String
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  login  Login?
+  ventas Venta[] @relation("EmpleadoVentas")
+
+  @@map("empleados")
+}
+
+model Categoria {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  productos Producto[] @relation
+
+  @@map("categorias")
+}
+
+model Producto {
+  id             Int      @id @default(autoincrement())
+  nombre         String
+  descripcion    String?
+  imagen         String?
+  precio         Float
+  stock          Int
+  fechaCaducidad DateTime
+  creadoEn       DateTime @default(now())
+  actualizadoEn  DateTime @updatedAt
+
+  idCategoria   Int
+  categoria     Categoria      @relation(fields: [idCategoria], references: [id])
+  detallesVenta DetalleVenta[] @relation
+
+  @@map("productos")
+}
+
+model DetalleVenta {
+  id            Int      @id @default(autoincrement())
+  idVenta       Int
+  idProducto    Int
+  cantidad      Int
+  precio        Float
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  venta    Venta    @relation(fields: [idVenta], references: [id])
+  producto Producto @relation(fields: [idProducto], references: [id])
+}
+
+model Venta {
+  id                Int      @id @default(autoincrement())
+  fecha             DateTime
+  total             Float
+  totalConDescuento Float
+  idEmpleado        Int
+  idCliente         Int
+  idDescuento       Int
+  creadoEn          DateTime @default(now())
+  actualizadoEn     DateTime @updatedAt
+
+  cliente       Cliente        @relation("ClienteVentas", fields: [idCliente], references: [id])
+  empleado      Empleado       @relation("EmpleadoVentas", fields: [idEmpleado], references: [id])
+  descuento     Descuento      @relation(fields: [idDescuento], references: [id])
+  detallesVenta DetalleVenta[] @relation
+}
+
+model Login {
+  id            Int      @id @default(autoincrement())
+  usuario       String
+  contrasena    String
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  idEmpleado Int      @unique
+  empleado   Empleado @relation(fields: [idEmpleado], references: [id])
+
+  @@map("logins")
+}
+
+model Descuento {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  porcentaje    Float
+  fechaInicio   DateTime
+  fechaFin      DateTime
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  ventas Venta[] @relation
+}

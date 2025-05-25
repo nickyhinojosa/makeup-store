@@ -16,3 +16,18 @@ export async function GET(req: Request) {
 
   return Response.json(clientes);
 }
+
+export async function POST(req: Request) {
+  const data = await req.json();
+
+  const nuevoCliente = await prisma.cliente.create({
+    data: {
+      nombre: data.nombre,
+      email: data.email,
+      telefono: data.telefono,
+      nit: data.nit,
+    },
+  });
+
+  return Response.json(nuevoCliente);
+}

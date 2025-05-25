@@ -18,3 +18,21 @@ export async function GET(req: Request) {
 
   return Response.json(productos);
 }
+
+export async function POST(req: Request) {
+  const data = await req.json();
+
+  const nuevoProducto = await prisma.producto.create({
+    data: {
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      imagen: data.imagen,
+      precio: data.precio,
+      stock: data.stock,
+      fechaCaducidad: new Date(data.fechaCaducidad),
+      idCategoria: data.idCategoria,
+    },
+  });
+
+  return Response.json(nuevoProducto);
+}

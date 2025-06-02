@@ -49,10 +49,10 @@ export default function VentasRealizadas({ data }: { data: VentaRealizada[] }) {
         return (
           <User
             avatarProps={{ src: "/woman.png" }}
-            description={venta.cliente.nits}
-            name={venta.cliente.nombres}
+            description={venta.cliente.nit}
+            name={venta.cliente.nombre}
           >
-            {venta.cliente.nombres}
+            {venta.cliente.nombre}
           </User>
         );
       case "creadoEn":

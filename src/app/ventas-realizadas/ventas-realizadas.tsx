@@ -50,9 +50,9 @@ export default function VentasRealizadas({ data }: { data: VentaRealizada[] }) {
           <User
             avatarProps={{ src: "/woman.png" }}
             description={venta.cliente.nit}
-            name={venta.cliente.nombre}
+            name={venta.cliente.nombres}
           >
-            {venta.cliente.nombre}
+            {venta.cliente.nombres}
           </User>
         );
       case "creadoEn":
@@ -64,8 +64,8 @@ export default function VentasRealizadas({ data }: { data: VentaRealizada[] }) {
       case "productos":
         return (
           <p className="text-bold text-sm capitalize">
-            {venta.detallesVenta.reduce(
-              (pre: number, cu: DetalleVenta) => pre + cu.cantidad,
+            {venta.detallesVentas.reduce(
+              (pre: number, cu: DetalleVentas) => pre + cu.cantidad,
               0
             )}
           </p>

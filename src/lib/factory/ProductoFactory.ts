@@ -28,7 +28,7 @@ export class ProductoFactory {
 
     // Validación adicional de campos
     const precioNum = parseFloat(precio);
-    if (isNaN(precioNum)) throw new Error("El precio debe ser un número válido");
+    if (isNaN(precioNum)) throw new Error("El precio debe ser un número válido, revisar");
     if (precioNum < 0) throw new Error("El precio no puede ser negativo");
 
     const stockNum = parseInt(stock);

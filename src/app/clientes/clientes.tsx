@@ -67,11 +67,6 @@ export default function Clientes({ data }: { data: Cliente[] }) {
                 Borrar cliente
               </BotonEliminar>
             </ModalEliminarIcono>
-            <ModalEliminarIcono>
-              <BotonEliminar id={item.id} action={capturarError} name="id">
-                Borrar cliente
-              </BotonEliminar>
-            </ModalEliminarIcono>
           </div>
         );
       default:

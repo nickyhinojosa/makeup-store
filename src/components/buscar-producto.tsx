@@ -7,7 +7,12 @@ import CajaProducto from "./caja-producto";
 import { Categoria } from "@prisma/client";
 import { useProducts } from "@/context/contexto-producto";
 
-function BuscarProducto() {
+type Props = {
+  redireccionar?: "si" | "no";
+  onClose?: () => void;
+};
+
+function BuscarProducto({ redireccionar = "si", onClose }: Props) {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<
     number | null
@@ -16,12 +21,8 @@ function BuscarProducto() {
 
   useEffect(() => {
     fetch("http://localhost:3000/api/categorias")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setCategorias(res);
-      });
+      .then((res) => res.json())
+      .then((res) => setCategorias(res));
   }, []);
 
   const handleCategoriaClick = (categoriaId: number) => {

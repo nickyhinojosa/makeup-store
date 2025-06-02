@@ -64,8 +64,8 @@ export default function VentasRealizadas({ data }: { data: VentaRealizada[] }) {
       case "productos":
         return (
           <p className="text-bold text-sm capitalize">
-            {venta.detallesVentas.reduce(
-              (pre: number, cu: DetalleVentas) => pre + cu.cantidad,
+            {venta.detallesVenta.reduce(
+              (pre: number, cu: DetalleVenta) => pre + cu.cantidad,
               0
             )}
           </p>

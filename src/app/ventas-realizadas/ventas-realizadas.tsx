@@ -49,7 +49,7 @@ export default function VentasRealizadas({ data }: { data: VentaRealizada[] }) {
         return (
           <User
             avatarProps={{ src: "/woman.png" }}
-            description={venta.cliente.nit}
+            description={venta.cliente.nits}
             name={venta.cliente.nombres}
           >
             {venta.cliente.nombres}
